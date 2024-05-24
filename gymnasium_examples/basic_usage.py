@@ -3,7 +3,7 @@ import gymnasium as gym
     
 env = gym.make("LunarLander-v2", render_mode="human")
 
-seed_value=0
+seed_value=1
 
 # Define options if the environment supports them
 options = {
@@ -17,6 +17,6 @@ for _ in range(1000):
     observation, reward, terminated, truncated, info = env.step(action)
 
     if terminated or truncated:
-        observation, info = env.reset()
+        observation, info = env.reset(seed=seed_value)
 
 env.close()
