@@ -5,7 +5,6 @@ env = gym.make("LunarLander-v2", render_mode="human")
 
 seed_value=1
 
-# Define options if the environment supports them
 options = {
     'start_position': 0,  # Example option, depends on the environment
 }

@@ -27,11 +27,6 @@ if __name__ == "__main__":
     # Create the vectorized environment
     vec_env = SubprocVecEnv([make_env(env_id, i) for i in range(num_cpu)])
 
-    # Stable Baselines provides you with make_vec_env() helper
-    # which does exactly the previous steps for you.
-    # You can choose between `DummyVecEnv` (usually faster) and `SubprocVecEnv`
-    # env = make_vec_env(env_id, n_envs=num_cpu, seed=0, vec_env_cls=SubprocVecEnv)
-
     model = PPO("MlpPolicy", vec_env, verbose=1)
     model.learn(total_timesteps=25_000)
 
