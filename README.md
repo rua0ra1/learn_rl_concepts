@@ -1,2 +1,2 @@
 # learn_rl_concepts
-This repository is aim to learn and understand different reinforcement learning concepts by using example given by open gymnasium
+This repository aims to learn and understand various reinforcement learning (RL) and deep reinforcement learning (DRL) concepts through online resources and the UC Berkeley Deep Reinforcement Learning course.
