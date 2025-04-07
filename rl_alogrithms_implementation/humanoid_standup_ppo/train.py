@@ -4,7 +4,7 @@ refered from : https://github.com/johnnycode8/gym_solutions/blob/main/sb3.py
 
 
 import gymnasium as gym
-from stable_baselines3 import SAC, TD3, A2C
+from stable_baselines3 import SAC, TD3, A2C, PPO
 import os
 import argparse
 
@@ -18,13 +18,16 @@ os.makedirs(log_dir, exist_ok=True)
 def train(env, sb3_algo):
     if sb3_algo == 'SAC':
         model = SAC('MlpPolicy', env, verbose=1,
-                    device='cuda', tensorboard_log=log_dir)
+                    device='cpu', tensorboard_log=log_dir)
     elif sb3_algo == 'TD3':
         model = TD3('MlpPolicy', env, verbose=1,
-                    device='cuda', tensorboard_log=log_dir)
+                    device='cpu', tensorboard_log=log_dir)
     elif sb3_algo == 'A2C':
         model = A2C('MlpPolicy', env, verbose=1,
-                    device='cuda', tensorboard_log=log_dir)
+                    device='cpu', tensorboard_log=log_dir)
+    elif sb3_algo == 'PPO':
+        model = PPO('MlpPolicy', env, verbose=1,
+                    device='cpu', tensorboard_log=log_dir)
     else:
         print('Algorithm not found')
         return
@@ -46,6 +49,8 @@ def test(env, sb3_algo, path_to_model):
         model = TD3.load(path_to_model, env=env)
     elif sb3_algo == 'A2C':
         model = A2C.load(path_to_model, env=env)
+    elif sb3_algo == 'PPO':
+        model = PPO.load(path_to_model, env=env)
     else:
         print('Algorithm not found')
         return
