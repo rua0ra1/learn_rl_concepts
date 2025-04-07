@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "humanoid-standup-ppo"
+version = "0.1.0"
+description = "Train a Humanoid to Stand using PPO and Stable Baselines3"
+authors = ["rua0ra1 <icherryme.0407@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.8"
+gym = "0.21.0"
+mujoco-py = "^2.1.2.14"
+stable-baselines3 = "1.6.2"
+imageio = "*"
+imageio-ffmpeg = "*"
+matplotlib = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
