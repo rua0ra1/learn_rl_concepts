@@ -73,6 +73,7 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
     update:
         Trains the policy with a supervised learning objective
     """
+
     def __init__(self,
                  ac_dim,
                  ob_dim,
@@ -129,7 +130,13 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         # through it. For example, you can return a torch.FloatTensor. You can also
         # return more flexible objects, such as a
         # `torch.distributions.Distribution` object. It's up to you!
-        raise NotImplementedError
+        # You can use the following code to sample from a normal distribution
+        # with the mean and stddev you compute in the forward pass:
+        mean = self.mean_net(observation)
+        std = torch.exp(self.logstd)
+        dist = distributions.Normal(mean, std)
+
+        return dist
 
     def update(self, observations, actions):
         """
@@ -141,6 +148,7 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
             dict: 'Training Loss': supervised learning loss
         """
         # TODO: update the policy and return the loss
+
         loss = TODO
         return {
             # You can add extra logging information here, but keep this line
