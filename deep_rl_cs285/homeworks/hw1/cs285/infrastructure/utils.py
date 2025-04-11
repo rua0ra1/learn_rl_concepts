@@ -46,12 +46,9 @@ def sample_trajectory(env, policy, max_path_length, render=False):
         steps += 1
         if steps >= max_path_length:
             done = True
-        if done:
-            next_ob = None
-            rew = 0 
 
         rollout_done = 1.0 if done else 0.0
-        
+
         # record result of taking that action
         obs.append(ob)
         acs.append(ac)

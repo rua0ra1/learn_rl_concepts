@@ -164,7 +164,7 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         # Detach the loss from the graph
         loss = loss.detach()
         # Convert the loss to numpy
-        loss = ptu.to_numpy(loss)
+        #loss = ptu.to_numpy(loss)
         
         return {
             # You can add extra logging information here, but keep this line
