@@ -165,6 +165,7 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         loss = loss.detach()
         # Convert the loss to numpy
         loss = ptu.to_numpy(loss)
+        
         return {
             # You can add extra logging information here, but keep this line
             'Training Loss': ptu.to_numpy(loss),
