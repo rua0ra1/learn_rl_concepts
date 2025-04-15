@@ -6,6 +6,7 @@ from cs285.networks.policies import MLPPolicyPG
 from cs285.networks.critics import ValueCritic
 from cs285.infrastructure import pytorch_util as ptu
 from torch import nn
+import os
 
 
 class PGAgent(nn.Module):
@@ -86,8 +87,9 @@ class PGAgent(nn.Module):
         # step 4: if needed, use all datapoints (s_t, a_t, q_t) to update the PG critic/baseline
         if self.critic is not None:
             # TODO: perform `self.baseline_gradient_steps` updates to the critic/baseline network
-            critic_info: dict = None
-
+            # using the q-values
+            for _ in range(self.baseline_gradient_steps):
+                critic_info = self.critic.update(obs, q_values)
             info.update(critic_info)
 
         return info
@@ -113,7 +115,6 @@ class PGAgent(nn.Module):
                 q_val_traj = self._discounted_reward_to_go(
                     reward_traj.tolist())
                 q_values.append(np.array(q_val_traj))
-            q_values = None
 
         return q_values
 
@@ -133,12 +134,15 @@ class PGAgent(nn.Module):
             advantages = q_values
         else:
             # TODO: run the critic and use it as a baseline
-            values = None
+            obs = ptu.from_numpy(obs)
+            values = self.critic(obs)
+            values = ptu.to_numpy(values).squeeze()
+
             assert values.shape == q_values.shape
 
             if self.gae_lambda is None:
                 # TODO: if using a baseline, but not GAE, what are the advantages?
-                advantages = None
+                advantages = q_values-values
             else:
                 # TODO: implement GAE
                 batch_size = obs.shape[0]
@@ -185,3 +189,4 @@ class PGAgent(nn.Module):
             discounted_rewards[t] = running_add
 
         return discounted_rewards
+    

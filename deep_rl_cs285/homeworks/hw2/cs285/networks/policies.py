@@ -46,7 +46,8 @@ class MLPPolicy(nn.Module):
             self.logstd = nn.Parameter(
                 torch.zeros(ac_dim, dtype=torch.float32, device=ptu.device)
             )
-            parameters = itertools.chain([self.logstd], self.mean_net.parameters())
+            parameters = itertools.chain(
+                [self.logstd], self.mean_net.parameters())
 
         self.optimizer = optim.Adam(
             parameters,
@@ -63,11 +64,12 @@ class MLPPolicy(nn.Module):
         action_dist = self.forward(obs)
         action = action_dist.sample()
         action = ptu.to_numpy(action)
+
         if self.discrete:
             action = action.astype(np.int64)
         else:
             action = action.astype(np.float32)
-        
+
         return action
 
     def forward(self, obs: torch.FloatTensor):
@@ -116,7 +118,7 @@ class MLPPolicyPG(MLPPolicy):
         else:
             action_dist = self.forward(obs)
             # For continuous actions, we need to use the reparameterization trick
-            # to compute the log probability of the actions.    
+            # to compute the log probability of the actions.
             log_probs = action_dist.log_prob(actions)
             log_probs = log_probs.sum(dim=-1)
             loss = -(log_probs * advantages).mean()
