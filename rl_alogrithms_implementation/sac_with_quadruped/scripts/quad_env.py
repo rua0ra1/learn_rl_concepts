@@ -20,7 +20,7 @@ class CustomQuadEnv (gym.Env):
     metadata = {'render_modes': ['human', 'rgb_array'], 'render_fps': 240}
 
     def __init__(self, render_mode=None):
-        super()().__init__()
+        super().__init__()
         self.render_mode = render_mode
         self.dt = 1/240
 
@@ -28,17 +28,25 @@ class CustomQuadEnv (gym.Env):
         self.action_space = spaces.Box(
             low=-1.0, high=1.0, shape=(12,), dtype=np.float32)
         # observation space: joint pos, joint vel, base vel and opeitnaiton
-        obs_dim = 12 + 12 + 6 + 4
+        obs_dim = 54
         self.observation_space = spaces.Box(
             low=-np.inf, high=np.inf, shape=(obs_dim,), dtype=np.float32)
 
         # connect the Bulet
         mode = p.GUI if render_mode == "human" else p.DIRECT
         self.cid = p.connect(mode)
-        p.setTimeStep(self.dt)
+        p.setPhysicsEngineParameter(fixedTimeStep=self.dt,
+                                    numSolverIterations=10)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
+
+        # set the path for the urdf and mesh files
+        # at the end of __init__ (after you’ve set self.cid):
+        # for the URDF itself
+        p.setAdditionalSearchPath(str(model_dir))
+        # for any “meshes/…” references
+        p.setAdditionalSearchPath(str(mesh_path))
         # load the plane
-        self.urdf = urdf_file
+        self.urdf = str(urdf_file)
         self.max_torque = 35.0
 
     def reset(self, seed=None, options=None):
@@ -47,8 +55,11 @@ class CustomQuadEnv (gym.Env):
         p.setGravity(0, 0, -9.8)
         p.setTimeStep(self.dt)
         # load the urdf
-        p.loadURDF("plane.urdf")
-        flags = flags = p.URDF_USE_INERTIA_FROM_FILE | p.URDF_MAINTAIN_LINK_ORDER
+        # 4️⃣ load the plane by absolute path (more robust)
+        import pybullet_data
+        plane_path = os.path.join(pybullet_data.getDataPath(), "plane.urdf")
+        p.loadURDF(plane_path)
+        flags = p.URDF_USE_INERTIA_FROM_FILE | p.URDF_MAINTAIN_LINK_ORDER
 
         self.robot = p.loadURDF(self.urdf, [0, 0, 0.4], p.getQuaternionFromEuler([0, 0, 0]),
                                 flags=flags, useFixedBase=False)
