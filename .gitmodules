@@ -1,0 +1,3 @@
+[submodule "rl_alogrithms_implementation/sac_with_quadruped/unitree_ros"]
+	path = rl_alogrithms_implementation/sac_with_quadruped/unitree_ros
+	url = https://github.com/unitreerobotics/unitree_ros.git
